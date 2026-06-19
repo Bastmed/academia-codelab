@@ -162,3 +162,4 @@ const cargarInscripciones = async () => {
 };
 
 cargarInscripciones();
+recargarTabla();

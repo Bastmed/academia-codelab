@@ -6,11 +6,14 @@ const cargarCursos = async () => {
     const cursos = await respuesta.json();
 
     contenedor.innerHTML = '';
-
+    document.getElementById('stat-cursos').textContent = cursos.length;
     if (cursos.length === 0) {
       contenedor.innerHTML = '<div class="col-12 text-center text-muted">Aún no hay cursos publicados.</div>';
       return;
     }
+    document.getElementById('stat-cursos').textContent = cursos.length;
+    const totalCupos = cursos.reduce((acc, c) => acc + Number(c.cupos), 0);
+    document.getElementById('stat-cupos').textContent = totalCupos;
 
     cursos.forEach((curso) => {
       const columna = document.createElement('div');
