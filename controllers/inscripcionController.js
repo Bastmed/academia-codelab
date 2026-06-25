@@ -1,23 +1,61 @@
-const db = require('../config/db');
+const db = require("../config/db");
 
 const registrar = (req, res) => {
   const { curso_id, nombre, email, telefono } = req.body;
 
   if (!curso_id || !nombre || !email || !telefono) {
-    res.status(400).json({ error: 'Todos los campos son obligatorios' });
+    res.status(400).json({ error: "Todos los campos son obligatorios" });
     return;
   }
 
   db.query(
-    'INSERT INTO inscripciones (curso_id, nombre, email, telefono) VALUES (?, ?, ?, ?)',
-    [curso_id, nombre, email, telefono],
-    (err, resultado) => {
-      if (err) {
-        res.status(500).json({ error: 'Error al registrar la inscripción' });
+    "SELECT cupos, nombre, duracion, precio FROM cursos WHERE id = ?",
+    [curso_id],
+    (err, filas) => {
+      if (err || filas.length === 0) {
+        res.status(404).json({ error: "Curso no encontrado" });
         return;
       }
-      res.status(201).json({ mensaje: 'Inscripción registrada correctamente' });
-    }
+
+      const curso = filas[0];
+
+      if (curso.cupos <= 0) {
+        res
+          .status(400)
+          .json({ error: "No hay cupos disponibles para este curso" });
+        return;
+      }
+
+      db.query(
+        "INSERT INTO inscripciones (curso_id, nombre, email, telefono) VALUES (?, ?, ?, ?)",
+        [curso_id, nombre, email, telefono],
+        (err, resultado) => {
+          if (err) {
+            res
+              .status(500)
+              .json({ error: "Error al registrar la inscripción" });
+            return;
+          }
+
+          db.query(
+            "UPDATE cursos SET cupos = cupos - 1 WHERE id = ?",
+            [curso_id],
+            (err2) => {
+              if (err2) {
+                console.error("Error al actualizar cupos:", err2.message);
+              }
+            },
+          );
+
+          res.status(201).json({
+            mensaje: "Inscripción registrada correctamente",
+            curso: curso.nombre,
+            duracion: curso.duracion,
+            precio: curso.precio,
+          });
+        },
+      );
+    },
   );
 };
 
@@ -32,7 +70,7 @@ const listar = (req, res) => {
 
   db.query(sql, (err, filas) => {
     if (err) {
-      res.status(500).json({ error: 'Error al listar inscripciones' });
+      res.status(500).json({ error: "Error al listar inscripciones" });
       return;
     }
     res.json(filas);

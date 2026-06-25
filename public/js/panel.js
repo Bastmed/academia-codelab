@@ -1,29 +1,29 @@
-const tbody = document.getElementById('cuerpo-tabla');
-const inputId = document.getElementById('curso-id');
-const inputNombre = document.getElementById('input-nombre');
-const inputDescripcion = document.getElementById('input-descripcion');
-const inputDuracion = document.getElementById('input-duracion');
-const inputPrecio = document.getElementById('input-precio');
-const inputCupos = document.getElementById('input-cupos');
-const tituloForm = document.getElementById('titulo-formulario');
-const btnGuardar = document.getElementById('btn-guardar');
-const btnCancelar = document.getElementById('btn-cancelar');
+const tbody = document.getElementById("cuerpo-tabla");
+const inputId = document.getElementById("curso-id");
+const inputNombre = document.getElementById("input-nombre");
+const inputDescripcion = document.getElementById("input-descripcion");
+const inputDuracion = document.getElementById("input-duracion");
+const inputPrecio = document.getElementById("input-precio");
+const inputCupos = document.getElementById("input-cupos");
+const tituloForm = document.getElementById("titulo-formulario");
+const btnGuardar = document.getElementById("btn-guardar");
+const btnCancelar = document.getElementById("btn-cancelar");
 
 const recargarTabla = async () => {
   try {
-    const respuesta = await fetch('/api/cursos');
+    const respuesta = await fetch("/api/cursos");
     const cursos = await respuesta.json();
 
-    tbody.innerHTML = '';
+    tbody.innerHTML = "";
 
     cursos.forEach((c) => {
-      const fila = document.createElement('tr');
+      const fila = document.createElement("tr");
       fila.innerHTML = `
         <td>${c.id}</td>
         <td>${c.nombre}</td>
         <td>${c.descripcion}</td>
         <td>${c.duracion}</td>
-        <td>$${Number(c.precio).toLocaleString('es-CL')}</td>
+        <td>$${Number(c.precio).toLocaleString("es-CL")}</td>
         <td>${c.cupos}</td>
         <td>
           <button class="btn btn-warning btn-sm me-1 btn-editar">Editar</button>
@@ -31,32 +31,35 @@ const recargarTabla = async () => {
         </td>
       `;
 
-      fila.querySelector('.btn-editar').addEventListener('click', () => prepararEdicion(c));
-      fila.querySelector('.btn-eliminar').addEventListener('click', () => eliminar(c.id));
+      fila
+        .querySelector(".btn-editar")
+        .addEventListener("click", () => prepararEdicion(c));
+      fila
+        .querySelector(".btn-eliminar")
+        .addEventListener("click", () => eliminar(c.id));
 
       tbody.appendChild(fila);
     });
-
   } catch (err) {
     tbody.innerHTML = `<tr><td colspan="7" class="text-danger text-center">Error: ${err.message}</td></tr>`;
   }
 };
 
-document.querySelectorAll('.btn-editar').forEach((btn) => {
-  btn.addEventListener('click', () => {
+document.querySelectorAll(".btn-editar").forEach((btn) => {
+  btn.addEventListener("click", () => {
     prepararEdicion({
       id: btn.dataset.id,
       nombre: btn.dataset.nombre,
       descripcion: btn.dataset.descripcion,
       duracion: btn.dataset.duracion,
       precio: btn.dataset.precio,
-      cupos: btn.dataset.cupos
+      cupos: btn.dataset.cupos,
     });
   });
 });
 
-document.querySelectorAll('.btn-eliminar').forEach((btn) => {
-  btn.addEventListener('click', () => eliminar(btn.dataset.id));
+document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+  btn.addEventListener("click", () => eliminar(btn.dataset.id));
 });
 
 const guardar = async () => {
@@ -66,29 +69,55 @@ const guardar = async () => {
   const duracion = inputDuracion.value.trim();
   const precio = inputPrecio.value;
   const cupos = inputCupos.value;
+  const archivoImagen = document.getElementById("input-imagen").files[0];
 
   if (!nombre || !descripcion || !duracion || !precio || !cupos) {
-    alert('Completa todos los campos antes de guardar.');
+    alert("Completa todos los campos antes de guardar.");
     return;
   }
 
-  const metodo = id ? 'PUT' : 'POST';
-  const url = id ? `/api/cursos/${id}` : '/api/cursos';
+  let imagen = inputId.dataset.imagenActual || "default.png";
+
+  if (archivoImagen) {
+    const formData = new FormData();
+    formData.append("imagen", archivoImagen);
+
+    try {
+      const respuestaUpload = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const dataUpload = await respuestaUpload.json();
+      imagen = dataUpload.nombre;
+    } catch (err) {
+      alert("Error al subir la imagen.");
+      return;
+    }
+  }
+
+  const metodo = id ? "PUT" : "POST";
+  const url = id ? `/api/cursos/${id}` : "/api/cursos";
 
   try {
     const respuesta = await fetch(url, {
       method: metodo,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nombre, descripcion, duracion, precio, cupos })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nombre,
+        descripcion,
+        duracion,
+        precio,
+        cupos,
+        imagen,
+      }),
     });
 
     if (respuesta.ok) {
       limpiarFormulario();
       recargarTabla();
     } else {
-      alert('No se pudo guardar el curso.');
+      alert("No se pudo guardar el curso.");
     }
-
   } catch (err) {
     alert(`Error al guardar: ${err.message}`);
   }
@@ -101,7 +130,8 @@ const prepararEdicion = (curso) => {
   inputDuracion.value = curso.duracion;
   inputPrecio.value = curso.precio;
   inputCupos.value = curso.cupos;
-  tituloForm.textContent = 'Editar Curso';
+  inputId.dataset.imagenActual = curso.imagen || "default.png";
+  tituloForm.textContent = "Editar Curso";
 };
 
 const eliminar = async (id) => {
@@ -112,6 +142,7 @@ const eliminar = async (id) => {
 
     if (respuesta.ok) {
       recargarTabla();
+      cargarInscripciones();
     } else {
       alert('No se pudo eliminar el curso.');
     }
@@ -122,44 +153,81 @@ const eliminar = async (id) => {
 };
 
 const limpiarFormulario = () => {
-  inputId.value = '';
-  inputNombre.value = '';
-  inputDescripcion.value = '';
-  inputDuracion.value = '';
-  inputPrecio.value = '';
-  inputCupos.value = '';
-  tituloForm.textContent = 'Agregar Curso';
+  inputId.value = "";
+  inputNombre.value = "";
+  inputDescripcion.value = "";
+  inputDuracion.value = "";
+  inputPrecio.value = "";
+  inputCupos.value = "";
+  tituloForm.textContent = "Agregar Curso";
 };
 
-btnGuardar.addEventListener('click', guardar);
-btnCancelar.addEventListener('click', limpiarFormulario);
+btnGuardar.addEventListener("click", guardar);
+btnCancelar.addEventListener("click", limpiarFormulario);
 
-const cuerpoInscripciones = document.getElementById('cuerpo-inscripciones');
+const cuerpoInscripciones = document.getElementById("cuerpo-inscripciones");
 
 const cargarInscripciones = async () => {
   try {
-    const respuesta = await fetch('/api/inscripciones');
+    const respuesta = await fetch("/api/inscripciones");
     const inscripciones = await respuesta.json();
 
     if (inscripciones.length === 0) {
-      cuerpoInscripciones.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Aún no hay inscripciones.</td></tr>';
+      cuerpoInscripciones.innerHTML =
+        '<tr><td colspan="5" class="text-center text-muted">Aún no hay inscripciones.</td></tr>';
       return;
     }
 
-    cuerpoInscripciones.innerHTML = inscripciones.map((i) => `
+    cuerpoInscripciones.innerHTML = inscripciones
+      .map(
+        (i) => `
       <tr>
         <td>${i.nombre}</td>
         <td>${i.email}</td>
         <td>${i.telefono}</td>
         <td>${i.curso}</td>
-        <td>${new Date(i.fecha).toLocaleString('es-CL')}</td>
+        <td>${new Date(i.fecha).toLocaleString("es-CL")}</td>
       </tr>
-    `).join('');
-
+    `,
+      )
+      .join("");
   } catch (err) {
     cuerpoInscripciones.innerHTML = `<tr><td colspan="5" class="text-danger text-center">Error: ${err.message}</td></tr>`;
   }
 };
+
+cargarInscripciones();
+
+const exportarExcel = async () => {
+  try {
+    const respuesta = await fetch("/api/inscripciones");
+    const inscripciones = await respuesta.json();
+
+    if (inscripciones.length === 0) {
+      alert("No hay inscripciones para exportar.");
+      return;
+    }
+
+    const datos = inscripciones.map((i) => ({
+      Nombre: i.nombre,
+      Email: i.email,
+      Telefono: i.telefono,
+      Curso: i.curso,
+      Fecha: new Date(i.fecha).toLocaleString("es-CL"),
+    }));
+
+    const hoja = XLSX.utils.json_to_sheet(datos);
+    const libro = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(libro, hoja, "Inscripciones");
+    XLSX.writeFile(libro, "inscripciones-academia-codelab.xlsx");
+  } catch (err) {
+    alert(`Error al exportar: ${err.message}`);
+  }
+};
+
+document
+  .getElementById("btn-exportar")
+  .addEventListener("click", exportarExcel);
 
 cargarInscripciones();
 recargarTabla();

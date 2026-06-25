@@ -1,23 +1,25 @@
-const fs = require('fs');
-const path = require('path');
-const db = require('../config/db');
-const Curso = require('../model/Curso');
+const fs = require("fs");
+const path = require("path");
+const db = require("../config/db");
+const Curso = require("../model/Curso");
 
-const RUTA_VISTA_PANEL = path.join(__dirname, '../views/admin/panel.html');
+const RUTA_VISTA_PANEL = path.join(__dirname, "../views/admin/panel.html");
 
 const mostrarPanel = (req, res) => {
-  db.query('SELECT * FROM cursos', (err, filas) => {
+  db.query("SELECT * FROM cursos", (err, filas) => {
     if (err) {
-      return res.status(500).send('Error al cargar el panel');
+      return res.status(500).send("Error al cargar el panel");
     }
 
-    const filasHtml = filas.map(c => `
+    const filasHtml = filas
+      .map(
+        (c) => `
       <tr>
         <td>${c.id}</td>
         <td>${c.nombre}</td>
         <td>${c.descripcion}</td>
         <td>${c.duracion}</td>
-        <td>$${Number(c.precio).toLocaleString('es-CL')}</td>
+        <td>$${Number(c.precio).toLocaleString("es-CL")}</td>
         <td>${c.cupos}</td>
         <td>
           <button class="btn btn-warning btn-sm me-1 btn-editar"
@@ -26,12 +28,14 @@ const mostrarPanel = (req, res) => {
           <button class="btn btn-danger btn-sm btn-eliminar" data-id="${c.id}">Eliminar</button>
         </td>
       </tr>
-    `).join('');
+    `,
+      )
+      .join("");
 
-    const plantilla = fs.readFileSync(RUTA_VISTA_PANEL, 'utf-8');
+    const plantilla = fs.readFileSync(RUTA_VISTA_PANEL, "utf-8");
     const html = plantilla.replace(
       '<!-- {{FILAS_CURSOS}} -->\n      <tbody id="cuerpo-tabla"></tbody>',
-      `<tbody id="cuerpo-tabla">${filasHtml}</tbody>`
+      `<tbody id="cuerpo-tabla">${filasHtml}</tbody>`,
     );
 
     res.send(html);
@@ -39,79 +43,122 @@ const mostrarPanel = (req, res) => {
 };
 
 const listar = (req, res) => {
-  db.query('SELECT * FROM cursos', (err, filas) => {
+  db.query("SELECT * FROM cursos", (err, filas) => {
     if (err) {
-      res.status(500).json({ error: 'Error al listar cursos' });
+      res.status(500).json({ error: "Error al listar cursos" });
       return;
     }
     const cursos = filas.map(
-      (f) => new Curso(f.id, f.nombre, f.descripcion, f.duracion, f.precio, f.cupos)
+      (f) =>
+        new Curso(
+          f.id,
+          f.nombre,
+          f.descripcion,
+          f.duracion,
+          f.precio,
+          f.cupos,
+          f.imagen,
+        ),
     );
     res.json(cursos);
   });
 };
 
 const agregar = (req, res) => {
-  const { nombre, descripcion, duracion, precio, cupos } = req.body;
+  const { nombre, descripcion, duracion, precio, cupos, imagen } = req.body;
 
   if (!nombre || !descripcion || !duracion || !precio || !cupos) {
-    res.status(400).json({ error: 'Todos los campos son obligatorios' });
+    res.status(400).json({ error: "Todos los campos son obligatorios" });
     return;
   }
 
+  const imagenFinal = imagen || "default.png";
+
   db.query(
-    'INSERT INTO cursos (nombre, descripcion, duracion, precio, cupos) VALUES (?, ?, ?, ?, ?)',
-    [nombre, descripcion, duracion, precio, cupos],
+    "INSERT INTO cursos (nombre, descripcion, duracion, precio, cupos, imagen) VALUES (?, ?, ?, ?, ?, ?)",
+    [nombre, descripcion, duracion, precio, cupos, imagenFinal],
     (err, resultado) => {
       if (err) {
-        res.status(500).json({ error: 'Error al agregar curso' });
+        res.status(500).json({ error: "Error al agregar curso" });
         return;
       }
-      const nuevo = new Curso(resultado.insertId, nombre, descripcion, duracion, precio, cupos);
-      res.status(201).json(nuevo);
-    }
+      res
+        .status(201)
+        .json(
+          new Curso(
+            resultado.insertId,
+            nombre,
+            descripcion,
+            duracion,
+            precio,
+            cupos,
+            imagenFinal,
+          ),
+        );
+    },
   );
 };
 
 const editar = (req, res) => {
   const { id } = req.params;
-  const { nombre, descripcion, duracion, precio, cupos } = req.body;
+  const { nombre, descripcion, duracion, precio, cupos, imagen } = req.body;
 
   if (!nombre || !descripcion || !duracion || !precio || !cupos) {
-    res.status(400).json({ error: 'Todos los campos son obligatorios' });
+    res.status(400).json({ error: "Todos los campos son obligatorios" });
     return;
   }
 
+  const imagenFinal = imagen || "default.png";
+
   db.query(
-    'UPDATE cursos SET nombre = ?, descripcion = ?, duracion = ?, precio = ?, cupos = ? WHERE id = ?',
-    [nombre, descripcion, duracion, precio, cupos, id],
+    "UPDATE cursos SET nombre = ?, descripcion = ?, duracion = ?, precio = ?, cupos = ?, imagen = ? WHERE id = ?",
+    [nombre, descripcion, duracion, precio, cupos, imagenFinal, id],
     (err, resultado) => {
       if (err) {
-        res.status(500).json({ error: 'Error al editar curso' });
+        res.status(500).json({ error: "Error al editar curso" });
         return;
       }
       if (resultado.affectedRows === 0) {
-        res.status(404).json({ error: 'Curso no encontrado' });
+        res.status(404).json({ error: "Curso no encontrado" });
         return;
       }
-      res.json(new Curso(id, nombre, descripcion, duracion, precio, cupos));
-    }
+      res.json(
+        new Curso(
+          id,
+          nombre,
+          descripcion,
+          duracion,
+          precio,
+          cupos,
+          imagenFinal,
+        ),
+      );
+    },
   );
 };
 
 const eliminar = (req, res) => {
   const { id } = req.params;
 
-  db.query('DELETE FROM cursos WHERE id = ?', [id], (err, resultado) => {
+  db.query("DELETE FROM inscripciones WHERE curso_id = ?", [id], (err) => {
     if (err) {
-      res.status(500).json({ error: 'Error al eliminar curso' });
+      res
+        .status(500)
+        .json({ error: "Error al eliminar inscripciones del curso" });
       return;
     }
-    if (resultado.affectedRows === 0) {
-      res.status(404).json({ error: 'Curso no encontrado' });
-      return;
-    }
-    res.json({ mensaje: 'Curso eliminado correctamente' });
+
+    db.query("DELETE FROM cursos WHERE id = ?", [id], (err2, resultado) => {
+      if (err2) {
+        res.status(500).json({ error: "Error al eliminar curso" });
+        return;
+      }
+      if (resultado.affectedRows === 0) {
+        res.status(404).json({ error: "Curso no encontrado" });
+        return;
+      }
+      res.json({ mensaje: "Curso eliminado correctamente" });
+    });
   });
 };
 

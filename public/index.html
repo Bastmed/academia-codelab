@@ -1,129 +1,194 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Academia CodeLab</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/estilos.css">
-</head>
-<body>
-
-  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#152a4f;">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="/">Academia CodeLab</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="menu">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="#cursos">Cursos</a></li>
-          <li class="nav-item"><a class="nav-link" href="#nosotros">Nosotros</a></li>
-          <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
-          <li class="nav-item">
-            <a class="btn btn-sm btn-outline-light ms-2" href="/login">Administración</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <header class="hero text-white text-center">
-    <div class="container py-5">
-      <h1 class="display-5 fw-bold">Aprende habilidades reales,<br>a tu propio ritmo</h1>
-      <p class="lead mt-3">Cursos cortos de tecnología pensados para quienes quieren partir desde cero.</p>
-      <a href="#cursos" class="btn btn-lg btn-warning mt-2 fw-semibold">Ver cursos disponibles</a>
-    </div>
-  </header>
-
-  <section id="cursos" class="container py-5">
-    <h2 class="text-center fw-bold mb-2">Nuestros Cursos</h2>
-    <p class="text-center text-muted mb-5">Cupos limitados por curso — inscripciones abiertas todo el año.</p>
-
-    <div class="row g-4" id="contenedor-cursos">
-      <div class="col-12 text-center text-muted">Cargando cursos...</div>
-    </div>
-  </section>
-
-  <section id="nosotros" class="py-5" style="background-color:#f4f6fb;">
-    <div class="container">
-      <div class="row align-items-center g-4">
-        <div class="col-md-6">
-          <h2 class="fw-bold">Sobre la academia</h2>
-          <p class="text-muted">
-            En Academia CodeLab creemos que cualquier persona puede aprender tecnología
-            si tiene la guía correcta. Nuestros cursos son cortos, prácticos y dictados
-            por instructores con experiencia real en la industria.
-          </p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Academia CodeLab</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+    <nav
+      class="navbar navbar-expand-lg navbar-dark"
+      style="background-color: #152a4f"
+    >
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="/">Academia CodeLab</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#menu"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="menu">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#cursos">Cursos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#nosotros">Nosotros</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contacto">Contacto</a>
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-sm btn-outline-light ms-2" href="/login"
+                >Administración</a
+              >
+            </li>
+          </ul>
         </div>
-        <div class="col-md-6">
-          <div class="row text-center g-3">
-            <div class="col-4">
-              <div class="stat-box">
-                <div class="stat-num" id="stat-cursos">3</div>
-                <div class="stat-label">Cursos activos</div>
+      </div>
+    </nav>
+
+    <header class="hero text-white text-center">
+      <div class="container py-5">
+        <h1 class="display-5 fw-bold">
+          Aprende habilidades reales,<br />a tu propio ritmo
+        </h1>
+        <p class="lead mt-3">
+          Cursos cortos de tecnología pensados para quienes quieren partir desde
+          cero.
+        </p>
+        <a href="#cursos" class="btn btn-lg btn-warning mt-2 fw-semibold"
+          >Ver cursos disponibles</a
+        >
+      </div>
+    </header>
+
+    <section id="cursos" class="container py-5">
+      <h2 class="text-center fw-bold mb-2">Nuestros Cursos</h2>
+      <p class="text-center text-muted mb-5">
+        Cupos limitados por curso — inscripciones abiertas todo el año.
+      </p>
+
+      <div class="row g-4" id="contenedor-cursos">
+        <div class="col-12 text-center text-muted">Cargando cursos...</div>
+      </div>
+    </section>
+
+    <section id="nosotros" class="py-5" style="background-color: #f4f6fb">
+      <div class="container">
+        <div class="row align-items-center g-4">
+          <div class="col-md-6">
+            <h2 class="fw-bold">Sobre la academia</h2>
+            <p class="text-muted">
+              En Academia CodeLab creemos que cualquier persona puede aprender
+              tecnología si tiene la guía correcta. Nuestros cursos son cortos,
+              prácticos y dictados por instructores con experiencia real en la
+              industria.
+            </p>
+          </div>
+          <div class="col-md-6">
+            <div class="row text-center g-3">
+              <div class="col-4">
+                <div class="stat-box">
+                  <div class="stat-num" id="stat-cursos">3</div>
+                  <div class="stat-label">Cursos activos</div>
+                </div>
               </div>
-            </div>
-            <div class="col-4">
-              <div class="stat-box">
-                <div class="stat-num" id="stat-cupos">60+</div>
-                <div class="stat-label">Cupos totales</div>
+              <div class="col-4">
+                <div class="stat-box">
+                  <div class="stat-num" id="stat-cupos">60+</div>
+                  <div class="stat-label">Cupos totales</div>
+                </div>
               </div>
-            </div>
-            <div class="col-4">
-              <div class="stat-box">
-                <div class="stat-num" id="stat-practico">100%</div>
-                <div class="stat-label">Práctico</div>
+              <div class="col-4">
+                <div class="stat-box">
+                  <div class="stat-num" id="stat-practico">100%</div>
+                  <div class="stat-label">Práctico</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="contacto" class="container py-5 text-center">
-    <h2 class="fw-bold mb-3">¿Tienes dudas?</h2>
-    <p class="text-muted mb-4">Escríbenos y te ayudamos a elegir el curso ideal para ti.</p>
-    <a href="mailto:contacto@academiacodelab.cl" class="btn btn-outline-primary">contacto@academiacodelab.cl</a>
-  </section>
+    <section id="contacto" class="container py-5 text-center">
+      <h2 class="fw-bold mb-3">¿Tienes dudas?</h2>
+      <p class="text-muted mb-4">
+        Escríbenos y te ayudamos a elegir el curso ideal para ti.
+      </p>
+      <a
+        href="mailto:contacto@academiacodelab.cl"
+        class="btn btn-outline-primary"
+        >contacto@academiacodelab.cl</a
+      >
+    </section>
 
-  <footer class="text-white text-center py-3" style="background-color:#152a4f;">
-    <small>© 2026 Academia CodeLab — Proyecto académico</small>
-  </footer>
+    <footer
+      class="text-white text-center py-3"
+      style="background-color: #152a4f"
+    >
+      <small>© 2026 Academia CodeLab — Proyecto académico</small>
+    </footer>
 
-  <div class="modal fade" id="modalInscripcion" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Inscríbete a <span id="modal-curso-nombre"></span></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <form id="form-inscripcion">
-            <input type="hidden" id="modal-curso-id">
-            <div class="mb-3">
-              <label class="form-label">Nombre completo</label>
-              <input type="text" id="inscripcion-nombre" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Correo electrónico</label>
-              <input type="email" id="inscripcion-email" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Teléfono</label>
-              <input type="tel" id="inscripcion-telefono" class="form-control" placeholder="+56 9 1234 5678" required>
-            </div>
-            <div id="inscripcion-mensaje" class="small"></div>
-            <button type="submit" class="btn btn-primary w-100 mt-2">Reservar cupo</button>
-          </form>
+    <div class="modal fade" id="modalInscripcion" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Inscríbete a <span id="modal-curso-nombre"></span>
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="form-inscripcion">
+              <input type="hidden" id="modal-curso-id" />
+              <div class="mb-3">
+                <label class="form-label">Nombre completo</label>
+                <input
+                  type="text"
+                  id="inscripcion-nombre"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Correo electrónico</label>
+                <input
+                  type="email"
+                  id="inscripcion-email"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Teléfono</label>
+                <input
+                  type="tel"
+                  id="inscripcion-telefono"
+                  class="form-control"
+                  placeholder="+56 9 1234 5678"
+                  required
+                />
+              </div>
+              <div id="inscripcion-mensaje" class="small"></div>
+              <button type="submit" class="btn btn-primary w-100 mt-2">
+                Reservar cupo
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/js/inicio.js"></script>
-</body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/inicio.js"></script>
+  </body>
 </html>
